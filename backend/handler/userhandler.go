@@ -69,3 +69,9 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 	}
 	c.JSON(201, user)
 }
+
+func (h *userHandler) UpdateUser(c *gin.Context) {
+	UserID := c.Params.ByName("book_id")
+
+	var input book.UpdateUser
+}
