@@ -1,4 +1,4 @@
-package migration
+package users
 
 type UserRegisterinput struct {
 	Name     string `json:"name" binding:"requiered"`

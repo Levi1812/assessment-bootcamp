@@ -1,10 +1,10 @@
 package config
 
 import (
+	"assessment/user"
 	"fmt"
 	"log"
 	"os"
-	"os/user"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"

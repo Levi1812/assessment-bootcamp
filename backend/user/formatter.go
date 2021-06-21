@@ -1,4 +1,4 @@
-package migration
+package user
 
 type UserFormatter struct {
 	UserId  int    `json:"userid"`
@@ -7,12 +7,12 @@ type UserFormatter struct {
 	Address string `json:"address"`
 }
 
-func UserFormat(migration User) UserFormatter {
+func UserFormat(user User) UserFormatter {
 	return UserFormatter{
-		UserId:  migration.UserId,
-		Name:    migration.Name,
-		Email:   migration.Email,
-		Address: migration.Address,
+		UserId:  user.UserId,
+		Name:    user.Name,
+		Email:   user.Email,
+		Address: user.Address,
 	}
 }
 

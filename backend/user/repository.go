@@ -1,4 +1,4 @@
-package migration
+package users
 
 import "gorm.io/gorm"
 
