@@ -1,11 +1,12 @@
 package config
 
 import (
-	"assessment/migration"
 	"fmt"
 	"log"
 	"os"
+	"os/user"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -26,7 +27,7 @@ func Config() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(&migration.User)
+	err = db.AutoMigrate(&user.User{})
 	if err != nil {
 		log.Fatal(err)
 	}
