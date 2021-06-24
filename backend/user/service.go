@@ -1,6 +1,7 @@
 package user
 
 import (
+	"assessment/auth"
 	"errors"
 	"time"
 
@@ -9,19 +10,18 @@ import (
 
 type Service interface {
 	RegisterUser(input UserRegisterinput) (UserFormatter, error)
-	LoginUser(input UserLogininput) (UserFormatter, error)
+	LoginUser(input UserLogininput) (UserLoginFormatter, error)
 	GetAllUser() ([]UserFormatter, error)
 	GetUserByID(UserId string) (UserFormatter, error)
-	UpdateUser(UserId string, input UpdateUser) (UserFormatter, error)
-	DeleteUser(UserId string) (string, error)
 }
 
 type service struct {
-	repository Repository
+	repository  Repository
+	authService auth.Service
 }
 
-func NewService(repository Repository) *service {
-	return &service{repository}
+func NewService(repository Repository, authService auth.Service) *service {
+	return &service{repository, authService}
 }
 
 // Service
@@ -46,22 +46,23 @@ func (s *service) RegisterUser(input UserRegisterinput) (UserFormatter, error) {
 	return formatter, nil
 }
 
-func (s *service) LoginUser(input UserLogininput) (UserFormatter, error) {
+func (s *service) LoginUser(input UserLogininput) (UserLoginFormatter, error) {
 
 	checkUser, err := s.repository.FindByEmail(input.Email)
 	if err != nil {
-		return UserFormatter{}, err
+		return UserLoginFormatter{}, err
 	}
 	if checkUser.UserId == 0 || len(checkUser.Name) <= 1 {
-		return UserFormatter{}, errors.New("MASUKAN EMAIL / PASSWORD DENGAN BENAR")
+		return UserLoginFormatter{}, errors.New("MASUKAN EMAIL / PASSWORD DENGAN BENAR")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(checkUser.Password), []byte(input.Password))
 	if err != nil {
-		return UserFormatter{}, errors.New("MASUKAN EMAIL / PASSWORD DENGAN BENAR")
+		return UserLoginFormatter{}, errors.New("MASUKAN EMAIL / PASSWORD DENGAN BENAR")
 	}
+	token, _ := s.authService.GenerateToken(checkUser.UserId)
 
-	formatter := UserFormat(checkUser)
+	formatter := UserLoginFormat(checkUser, token)
 
 	return formatter, nil
 
@@ -89,26 +90,4 @@ func (s *service) GetUserByID(UserId string) (UserFormatter, error) {
 	formatter := UserFormat(user)
 
 	return formatter, nil
-}
-
-func (s *service) UpdateUser(UserId string, input UpdateUser) (UserFormatter, error) {
-	var userUpdate = map[string]interface{}{}
-
-	if input.Name != "" || len(input.Name) != 0 {
-		userUpdate["Name"] = input.Name
-	}
-
-	if input.Address != "" || len(input.Address) != 0 {
-		userUpdate["Address"] = input.Address
-	}
-
-	userUpdate["updated_at"] = time.Now()
-
-	user, err := s.repository.Update(UserId, userUpdate)
-
-	if err != nil {
-		return user, err
-	}
-
-	return user, nil
 }

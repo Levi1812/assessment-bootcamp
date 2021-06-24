@@ -1,6 +1,7 @@
 package config
 
 import (
+	"assessment/site"
 	"assessment/user"
 	"fmt"
 	"log"
@@ -27,10 +28,7 @@ func Config() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(&user.User{})
-	if err != nil {
-		log.Fatal(err)
-	}
+	db.AutoMigrate(&user.User{}, &site.Site{})
 
 	return db
 }

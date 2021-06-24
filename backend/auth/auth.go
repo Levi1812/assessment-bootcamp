@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/joho/godotenv"
 )
 
@@ -13,23 +14,24 @@ var (
 )
 
 type Service interface {
-	GenerateToken(UserId int) (string, error)
-	ValidateToken(encodeToken string) (*jwt.Token, error)
+	GenerateToken(userID int) (string, error)
+	ValidateToken(encodedToken string) (*jwt.Token, error)
 }
 
 type jwtService struct {
 }
 
-func NewService() *jwtService {
+func NewAuthService() *jwtService {
 	return &jwtService{}
 }
 
-func (s *jwtService) GenerateToken(UserId int) (string, error) {
-	gen := jwt.MapClaims{
-		"user_id": UserId,
+func (s *jwtService) GenerateToken(userID int) (string, error) {
+	claim := jwt.MapClaims{
+		"user_id": userID,
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, gen)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+
 	signedToken, err := token.SignedString([]byte(key))
 
 	if err != nil {
@@ -53,5 +55,6 @@ func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	if err != nil {
 		return token, err
 	}
+
 	return token, nil
 }

@@ -1,13 +1,17 @@
-package users
+package user
 
-import "time"
+import (
+	"assessment/site"
+	"time"
+)
 
 type User struct {
-	UserId    int `json:"primaryKey"`
-	Name      string
-	Address   string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	UserId    int         `json:"user_id" gorm:"primaryKey"`
+	Name      string      `json:"name"`
+	Address   string      `json:"address"`
+	Email     string      `json:"email"`
+	Password  string      `json:"password"`
+	CreatedAt time.Time   `json:"created_at"`
+	UpdatedAt time.Time   `json:"updated_at"`
+	Site      []site.Site `json:"site" gorm:foreignKey`
 }

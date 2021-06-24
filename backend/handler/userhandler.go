@@ -1,17 +1,19 @@
 package handler
 
 import (
+	"assessment/auth"
 	"assessment/user"
 
 	"github.com/gin-gonic/gin"
 )
 
 type userHandler struct {
-	service user.Service
+	service     user.Service
+	authService auth.Service
 }
 
-func NewUserHandler(service user.Service) *userHandler {
-	return &userHandler{service}
+func NewUserHandler(service user.Service, authService auth.Service) *userHandler {
+	return &userHandler{service, authService}
 }
 
 // Handler
@@ -68,10 +70,4 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 		return
 	}
 	c.JSON(201, user)
-}
-
-func (h *userHandler) UpdateUser(c *gin.Context) {
-	UserID := c.Params.ByName("book_id")
-
-	var input book.UpdateUser
 }
