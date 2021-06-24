@@ -37,7 +37,7 @@ export const loginusr = (payload, history) => {
 
             localStorage.setItem("access_token", response.data.authorization)
 
-            // console.log(payload)
+            console.log(payload)
 
             history.push("/site")
 
